@@ -29,3 +29,6 @@ model.fit(train_images, train_labels, epochs=10, validation_data=(test_images, t
 score = model.evaluate(test_images,  test_labels, return_dict=True)
 
 print("\nDokładność modelu dla danych testowych:", score["accuracy"])
+
+# zapisanie modelu
+model.save('../resources/model.keras')
