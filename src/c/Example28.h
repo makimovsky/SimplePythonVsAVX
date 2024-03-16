@@ -151,10 +151,8 @@ void Example28NetDestroy(Example28Net*);
 // C has the largest pitch, W has the smallest pitch, and there is no
 // padding anywhere).
 //
-//     float* bn4Data = malloc(sizeof(float)*68*11*30);
-//     float* in1Data = malloc(sizeof(float)*42*13*32);
-//     float* in2Data = malloc(sizeof(float)*42*13*32);
-//     float* in3Data = malloc(sizeof(float)*68*11*30);
+//     float* inputdataData = malloc(sizeof(float)*1*28*28);
+//     float* outputlogitsData = malloc(sizeof(float)*10*1*1);
 //
 //     for (...) { // Reuse the input and output tensors.
 //
@@ -162,20 +160,16 @@ void Example28NetDestroy(Example28Net*);
 //
 //         Example28EngineInference( // This function cannot fail.
 //             engine, // Pass an Engine as the first argument.
-//             bn4Data, // The tensor arguments are sorted by name.
-//             in1Data,
-//             in2Data,
-//             in3Data
+//             inputdataData, // The tensor arguments are sorted by name.
+//             outputlogitsData
 //         );
 //
 //         ... Read the output floats ...
 //
 //     }
 //
-//     free(bn4Data);
-//     free(in1Data);
-//     free(in2Data);
-//     free(in3Data);
+//     free(inputdataData);
+//     free(outputlogitsData);
 //
 // The tensor parameters of the inference function are ordered by name,
 // lexically bytewise. In other words, the function parameters have been
@@ -198,10 +192,8 @@ char* Example28EnginePthreadT(
 
 void Example28EngineInference(
 	Example28Engine*,
-	float* bn4Data,
-	float* in1Data,
-	float* in2Data,
-	float* in3Data
+	float* inputdataData,
+	float* outputlogitsData
 );
 
 void Example28EngineDestroy(Example28Engine*);
@@ -212,24 +204,12 @@ void Example28EngineDestroy(Example28Engine*);
 // W is the innermost/fastest. There is no padding anywhere.
 
 struct Example28Params {
-	float bn1Means[42];       // 1x42x1x1
-	float bn1Scales[42];      // 1x42x1x1
-	float bn1Shifts[42];      // 1x42x1x1
-	float bn1Variances[42];   // 1x42x1x1
-	float bn2Means[42];       // 1x42x1x1
-	float bn2Scales[42];      // 1x42x1x1
-	float bn2Shifts[42];      // 1x42x1x1
-	float bn2Variances[42];   // 1x42x1x1
-	float bn3Means[68];       // 1x68x1x1
-	float bn3Scales[68];      // 1x68x1x1
-	float bn3Shifts[68];      // 1x68x1x1
-	float bn3Variances[68];   // 1x68x1x1
-	float bn4Means[68];       // 1x68x1x1
-	float bn4Scales[68];      // 1x68x1x1
-	float bn4Shifts[68];      // 1x68x1x1
-	float bn4Variances[68];   // 1x68x1x1
-	float convBiases[68];     // 1x68x1x1
-	float convWeights[25704]; // 68x42x3x3
+	float convoutputBiases[32];       // 1x32x1x1
+	float convoutputWeights[288];     // 32x1x3x3
+	float denseoutputBiases[64];      // 1x64x1x1
+	float denseoutputWeights[346112]; // 64x32x13x13
+	float outputlogitsBiases[10];     // 1x10x1x1
+	float outputlogitsWeights[640];   // 10x64x1x1
 } __attribute__((packed));
 
 #ifdef __cplusplus
