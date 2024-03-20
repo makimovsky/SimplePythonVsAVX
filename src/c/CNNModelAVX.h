@@ -53,15 +53,15 @@ extern "C" { /**/
 // trained parameter tensors to a file in this same format and order
 // you can load the struct as follows (error checking omitted here):
 //
-//     size_t size = sizeof(Example28Params);
-//     Example28Params* to = malloc(size);
+//     size_t size = sizeof(CNNModelAVXParams);
+//     CNNModelAVXParams* to = malloc(size);
 //     FILE* from = fopen("ParamsFile", "r");
 //     fread(to, size, 1, from);
 //     fclose(from);
 //
 // Be careful to match endianness (and floating point format).
 
-typedef struct Example28Params Example28Params;
+typedef struct CNNModelAVXParams CNNModelAVXParams;
 
 // The Net contains weights, biases, and other trained parameters in a
 // form that enables efficient inference. It is created from the input
@@ -70,12 +70,12 @@ typedef struct Example28Params Example28Params;
 // that are used to create the Net are temporary (in particular, those
 // threads are not used for inference).
 //
-//     Example28Params* params = malloc(sizeof(Example28Params));
+//     CNNModelAVXParams* params = malloc(sizeof(CNNModelAVXParams));
 //
 //     ... Load params (read from a file, perhaps) ...
 //
-//     Example28Net* net; // For example, 4 threads:
-//     char* err = Example28NetCreate(&net, params, 4);
+//     CNNModelAVXNet* net; // For example, 4 threads:
+//     char* err = CNNModelAVXNetCreate(&net, params, 4);
 //     free(params);
 //
 //     if (err) { // Nonzero err indicates failure; net is unmodified.
@@ -86,22 +86,22 @@ typedef struct Example28Params Example28Params;
 //
 //     ... Perform all inference that depends on net ...
 //
-//     Example28NetDestroy(net);
+//     CNNModelAVXNetDestroy(net);
 //
 // The Net can be shared and reused without restriction because it is
 // never modified (not even temporarily) after being created. The Net
 // should be destroyed (to free memory) once all dependent inference
 // is complete.
 
-typedef struct Example28Net Example28Net;
+typedef struct CNNModelAVXNet CNNModelAVXNet;
 
-char* Example28NetCreate(
-	Example28Net**,
-	Example28Params*,
+char* CNNModelAVXNetCreate(
+	CNNModelAVXNet**,
+	CNNModelAVXParams*,
 	ptrdiff_t threads
 );
 
-void Example28NetDestroy(Example28Net*);
+void CNNModelAVXNetDestroy(CNNModelAVXNet*);
 
 // An Engine performs inference. It contains inference threads, scratch
 // memory, and a pointer to the Net. Any number of Engines can share the
@@ -109,12 +109,12 @@ void Example28NetDestroy(Example28Net*);
 // modified. For best performance the number of inference threads should
 // not exceed the number of CPU cores.
 //
-//     Example28Net* net;
+//     CNNModelAVXNet* net;
 //
 //     ... Create net ...
 //
-//     Example28Engine* engine; // For example, 4 inference threads:
-//     char* err = Example28EngineCreate(&engine, net, 4);
+//     CNNModelAVXEngine* engine; // For example, 4 inference threads:
+//     char* err = CNNModelAVXEngineCreate(&engine, net, 4);
 //
 //     if (err) { // Nonzero err means failure; engine is unmodified.
 //         printf("%s\n", err); // Explain the failure, add a newline.
@@ -128,7 +128,7 @@ void Example28NetDestroy(Example28Net*);
 //     ... Use the POSIX threads API to adjust engine's threads ...
 //     ... Use engine to perform inference (dependent on net) ...
 //
-//     Example28EngineDestroy(engine); // Terminate threads, free memory.
+//     CNNModelAVXEngineDestroy(engine); // Terminate threads, free memory.
 //
 //     ... Destroy net ...
 //
@@ -138,7 +138,7 @@ void Example28NetDestroy(Example28Net*);
 // CPU affinity mask for the first inference thread, for example:
 //
 //     pthread_t thread; // The first thread has index 0:
-//     char* err = Example28EnginePthreadT(engine, 0, &thread);
+//     char* err = CNNModelAVXEnginePthreadT(engine, 0, &thread);
 //
 //     assert(!err); // Can only fail if the thread index is invalid.
 //
@@ -158,7 +158,7 @@ void Example28NetDestroy(Example28Net*);
 //
 //         ... Write the input floats ...
 //
-//         Example28EngineInference( // This function cannot fail.
+//         CNNModelAVXEngineInference( // This function cannot fail.
 //             engine, // Pass an Engine as the first argument.
 //             inputdataData, // The tensor arguments are sorted by name.
 //             outputlogitsData
@@ -176,39 +176,39 @@ void Example28NetDestroy(Example28Net*);
 // sorted by name using Go's "<" string comparison operator (a bytewise
 // lexical string sort).
 
-typedef struct Example28Engine Example28Engine;
+typedef struct CNNModelAVXEngine CNNModelAVXEngine;
 
-char* Example28EngineCreate(
-	Example28Engine**,
-	Example28Net*,
+char* CNNModelAVXEngineCreate(
+	CNNModelAVXEngine**,
+	CNNModelAVXNet*,
 	ptrdiff_t threads
 );
 
-char* Example28EnginePthreadT(
-	Example28Engine*,
+char* CNNModelAVXEnginePthreadT(
+	CNNModelAVXEngine*,
 	ptrdiff_t threadIdx,
 	pthread_t* to
 );
 
-void Example28EngineInference(
-	Example28Engine*,
+void CNNModelAVXEngineInference(
+	CNNModelAVXEngine*,
 	float* inputdataData,
 	float* outputlogitsData
 );
 
-void Example28EngineDestroy(Example28Engine*);
+void CNNModelAVXEngineDestroy(CNNModelAVXEngine*);
 
 // The fields of the following struct have been sorted by name using
 // Go's "<" string comparison operator (bytewise lexical string sort).
 // Tensor dimensions are NxCxHxW where N is the outermost/slowest and
 // W is the innermost/fastest. There is no padding anywhere.
 
-struct Example28Params {
-	float convoutputBiases[32];       // 1x32x1x1
+struct CNNModelAVXParams {
+	float convoutputBiases[32];       // 1x32x1x1 conv2d
 	float convoutputWeights[288];     // 32x1x3x3
-	float denseoutputBiases[64];      // 1x64x1x1
+	float denseoutputBiases[64];      // 1x64x1x1 dense
 	float denseoutputWeights[346112]; // 64x32x13x13
-	float outputlogitsBiases[10];     // 1x10x1x1
+	float outputlogitsBiases[10];     // 1x10x1x1 dense_1
 	float outputlogitsWeights[640];   // 10x64x1x1
 } __attribute__((packed));
 

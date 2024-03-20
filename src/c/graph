@@ -1,4 +1,4 @@
-Config Prefix=Example28 Platform=AVX512Float32 L1DataCachePerThread=32KiB L2CachePerThreadExL1=960KiB L3CachePerThreadExL1L2=1408KiB
+Config Prefix=CNNModelAVX Platform=AVX512Float32 L1DataCachePerThread=32KiB L2CachePerThreadExL1=960KiB L3CachePerThreadExL1L2=1408KiB
 Input ToTensor=inputdata Channels=1 Height=28 Width=28
 Conv FromTensor=inputdata ToTensor=convoutput ToChannels=32 FilterH=3 FilterW=3 StrideH=1 StrideW=1 PaddingH=0 PaddingW=0 DilationH=1 DilationW=1 Groups=1
 Pooling FromTensor=convoutput ToTensor=maxpooloutput Kind=Max2x2Stride2 PaddingH=0 PaddingW=0

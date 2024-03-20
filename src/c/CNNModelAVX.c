@@ -1,5 +1,5 @@
 // To build an object file:
-// gcc -c -w -std=c99 -pthread -Ofast -mavx512f Example28.c
+// gcc -c -w -std=c99 -pthread -Ofast -mavx512f CNNModelAVX.c
 
 // NN-512 (https://NN-512.com)
 //
@@ -45,33 +45,33 @@
 
 #include <immintrin.h>
 
-#include "Example28.h"
+#include "CNNModelAVX.h"
 
-static char* Example28Errmsg1(ptrdiff_t lineNum1, char* format1, ...) {
-	char* msg1 = malloc(277);
-	int step1 = sprintf(msg1, "Example28: line %td: ", lineNum1);
+static char* CNNModelAVXErrmsg1(ptrdiff_t lineNum1, char* format1, ...) {
+	char* msg1 = malloc(279);
+	int step1 = sprintf(msg1, "CNNModelAVX: line %td: ", lineNum1);
 	va_list ap1;
 	va_start(ap1, format1);
-	vsnprintf(msg1+step1, 277-step1, format1, ap1);
+	vsnprintf(msg1+step1, 279-step1, format1, ap1);
 	va_end(ap1);
 	return msg1;
 }
 
-typedef struct Example28ThreaderTask1 Example28ThreaderTask1;
-typedef void (*Example28ThreaderCallee1)(Example28ThreaderTask1*, int64_t*);
-typedef struct Example28ThreaderHub1 Example28ThreaderHub1;
-typedef struct Example28ThreaderNode1 Example28ThreaderNode1;
-typedef struct Example28ThreaderUnwind1 Example28ThreaderUnwind1;
-typedef struct Example28ThreaderTeam1 Example28ThreaderTeam1;
+typedef struct CNNModelAVXThreaderTask1 CNNModelAVXThreaderTask1;
+typedef void (*CNNModelAVXThreaderCallee1)(CNNModelAVXThreaderTask1*, int64_t*);
+typedef struct CNNModelAVXThreaderHub1 CNNModelAVXThreaderHub1;
+typedef struct CNNModelAVXThreaderNode1 CNNModelAVXThreaderNode1;
+typedef struct CNNModelAVXThreaderUnwind1 CNNModelAVXThreaderUnwind1;
+typedef struct CNNModelAVXThreaderTeam1 CNNModelAVXThreaderTeam1;
 
-struct Example28ThreaderTask1 {
-	Example28ThreaderCallee1 callee1;
+struct CNNModelAVXThreaderTask1 {
+	CNNModelAVXThreaderCallee1 callee1;
 	void* any1;
 	ptrdiff_t nd1;
 	int64_t hull1[4];
 };
 
-struct Example28ThreaderHub1 {
+struct CNNModelAVXThreaderHub1 {
 	pthread_mutex_t mut1;
 	pthread_cond_t cond1;
 	ptrdiff_t pending1;
@@ -80,17 +80,17 @@ struct Example28ThreaderHub1 {
 	long status1[];
 };
 
-struct Example28ThreaderNode1 {
+struct CNNModelAVXThreaderNode1 {
 	pthread_mutex_t mut2;
 	int64_t np1;
 	int64_t pt1[4];
-	Example28ThreaderTask1* task1;
+	CNNModelAVXThreaderTask1* task1;
 	pthread_cond_t cond2;
-	Example28ThreaderTeam1* team1;
+	CNNModelAVXThreaderTeam1* team1;
 	pthread_t thr1;
 } __attribute__((aligned(64)));
 
-struct Example28ThreaderUnwind1 {
+struct CNNModelAVXThreaderUnwind1 {
 	ptrdiff_t join1;
 	ptrdiff_t nodeConds1;
 	ptrdiff_t nodeMuts1;
@@ -100,14 +100,14 @@ struct Example28ThreaderUnwind1 {
 	void* hub1;
 };
 
-struct Example28ThreaderTeam1 {
+struct CNNModelAVXThreaderTeam1 {
 	ptrdiff_t nt1;
-	Example28ThreaderHub1* hub2;
-	Example28ThreaderNode1* nodes2;
-	Example28ThreaderUnwind1 unwind1;
+	CNNModelAVXThreaderHub1* hub2;
+	CNNModelAVXThreaderNode1* nodes2;
+	CNNModelAVXThreaderUnwind1 unwind1;
 };
 
-static void Example28ThreaderInc1(
+static void CNNModelAVXThreaderInc1(
 	ptrdiff_t nd2,
 	int64_t*restrict hull2,
 	int64_t*restrict pt2
@@ -123,7 +123,7 @@ static void Example28ThreaderInc1(
 	}
 }
 
-static void Example28ThreaderPut1(
+static void CNNModelAVXThreaderPut1(
 	ptrdiff_t nd3,
 	int64_t*restrict hull3,
 	int64_t*restrict pt3,
@@ -139,7 +139,7 @@ static void Example28ThreaderPut1(
 	for (; i2 < nd3; pt3[i2++] = 0);
 }
 
-static void Example28ThreaderAdd1(
+static void CNNModelAVXThreaderAdd1(
 	ptrdiff_t nd4,
 	int64_t*restrict hull4,
 	int64_t*restrict pt4,
@@ -159,16 +159,16 @@ static void Example28ThreaderAdd1(
 	}
 }
 
-static void* Example28ThreaderMain1(void* arg1) {
-	Example28ThreaderNode1* node1 = arg1;
-	Example28ThreaderTeam1* team2 = node1->team1;
+static void* CNNModelAVXThreaderMain1(void* arg1) {
+	CNNModelAVXThreaderNode1* node1 = arg1;
+	CNNModelAVXThreaderTeam1* team2 = node1->team1;
 	ptrdiff_t nt2 = team2->nt1;
-	Example28ThreaderHub1* hub3 = team2->hub2;
-	Example28ThreaderNode1* nodes3 = team2->nodes2;
+	CNNModelAVXThreaderHub1* hub3 = team2->hub2;
+	CNNModelAVXThreaderNode1* nodes3 = team2->nodes2;
 	size_t role1 = node1-nodes3;
 	for (; __builtin_expect(pthread_mutex_lock(&node1->mut2), 0); );
 	for (; ; ) {
-		Example28ThreaderTask1* task2 = node1->task1;
+		CNNModelAVXThreaderTask1* task2 = node1->task1;
 		if (!task2) {
 			for (; __builtin_expect(pthread_cond_wait(&node1->cond2, &node1->mut2), 0); );
 			continue;
@@ -179,13 +179,13 @@ static void* Example28ThreaderMain1(void* arg1) {
 			return 0;
 		}
 		node1->task1 = 0;
-		Example28ThreaderCallee1 callee2 = task2->callee1;
+		CNNModelAVXThreaderCallee1 callee2 = task2->callee1;
 		ptrdiff_t nd5 = task2->nd1;
 		int64_t pt5[4];
 		for (; np2; np2 = node1->np1) {
 			memcpy(pt5, node1->pt1, sizeof(pt5));
 			node1->np1 = np2-1;
-			Example28ThreaderInc1(nd5, task2->hull1, node1->pt1);
+			CNNModelAVXThreaderInc1(nd5, task2->hull1, node1->pt1);
 			for (; __builtin_expect(pthread_mutex_unlock(&node1->mut2), 0); );
 			callee2(task2, pt5);
 			for (; __builtin_expect(pthread_mutex_lock(&node1->mut2), 0); );
@@ -215,12 +215,12 @@ static void* Example28ThreaderMain1(void* arg1) {
 			hub3->offset1 = offset2;
 			hub3->mask1 = mask2-hand1;
 			for (; __builtin_expect(pthread_mutex_unlock(&hub3->mut1), 0); );
-			Example28ThreaderNode1* node2 = nodes3+target1;
+			CNNModelAVXThreaderNode1* node2 = nodes3+target1;
 			for (; __builtin_expect(pthread_mutex_lock(&node2->mut2), 0); );
 			for (np2 = node2->np1; np2; np2 = node2->np1) {
 				memcpy(pt5, node2->pt1, sizeof(pt5));
 				node2->np1 = np2-1;
-				Example28ThreaderInc1(nd5, task2->hull1, node2->pt1);
+				CNNModelAVXThreaderInc1(nd5, task2->hull1, node2->pt1);
 				for (; __builtin_expect(pthread_mutex_unlock(&node2->mut2), 0); );
 				callee2(task2, pt5);
 				for (; __builtin_expect(pthread_mutex_lock(&node2->mut2), 0); );
@@ -239,29 +239,29 @@ static void* Example28ThreaderMain1(void* arg1) {
 	}
 }
 
-static void Example28ThreaderDestroy1(Example28ThreaderTeam1* team3) {
+static void CNNModelAVXThreaderDestroy1(CNNModelAVXThreaderTeam1* team3) {
 	if (!team3) return;
-	Example28ThreaderNode1* nodes4 = team3->nodes2;
-	Example28ThreaderNode1* stop1 = nodes4+team3->unwind1.join1;
-	for (Example28ThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
+	CNNModelAVXThreaderNode1* nodes4 = team3->nodes2;
+	CNNModelAVXThreaderNode1* stop1 = nodes4+team3->unwind1.join1;
+	for (CNNModelAVXThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
 		for (; __builtin_expect(pthread_mutex_lock(&node3->mut2), 0); );
 		node3->np1 = -1;
-		node3->task1 = (Example28ThreaderTask1*)1;
+		node3->task1 = (CNNModelAVXThreaderTask1*)1;
 		for (; __builtin_expect(pthread_mutex_unlock(&node3->mut2), 0); );
 		for (; __builtin_expect(pthread_cond_signal(&node3->cond2), 0); );
 	}
-	for (Example28ThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
+	for (CNNModelAVXThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
 		for (; __builtin_expect(pthread_join(node3->thr1, 0), 0); );
 	}
 	stop1 = nodes4+team3->unwind1.nodeConds1;
-	for (Example28ThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
+	for (CNNModelAVXThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
 		for (; __builtin_expect(pthread_cond_destroy(&node3->cond2), 0); );
 	}
 	stop1 = nodes4+team3->unwind1.nodeMuts1;
-	for (Example28ThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
+	for (CNNModelAVXThreaderNode1* node3 = nodes4; node3 != stop1; ++node3) {
 		for (; __builtin_expect(pthread_mutex_destroy(&node3->mut2), 0); );
 	}
-	Example28ThreaderHub1* hub4 = team3->hub2;
+	CNNModelAVXThreaderHub1* hub4 = team3->hub2;
 	if (team3->unwind1.hubCond1) {
 		for (; __builtin_expect(pthread_cond_destroy(&hub4->cond1), 0); );
 	}
@@ -273,12 +273,12 @@ static void Example28ThreaderDestroy1(Example28ThreaderTeam1* team3) {
 	free(team3);
 }
 
-static char* Example28ThreaderCreate1Up4(Example28ThreaderTeam1* team8, ptrdiff_t nt7) {
-	Example28ThreaderNode1* nodes5 = team8->nodes2;
-	for (Example28ThreaderNode1* node4 = nodes5; node4 != nodes5+nt7; ++node4) {
+static char* CNNModelAVXThreaderCreate1Up4(CNNModelAVXThreaderTeam1* team8, ptrdiff_t nt7) {
+	CNNModelAVXThreaderNode1* nodes5 = team8->nodes2;
+	for (CNNModelAVXThreaderNode1* node4 = nodes5; node4 != nodes5+nt7; ++node4) {
 		int err2 = pthread_mutex_init(&node4->mut2, 0);
 		if (__builtin_expect(err2, 0)) {
-			char* msg2 = Example28Errmsg1(__LINE__, "errno %d", err2);
+			char* msg2 = CNNModelAVXErrmsg1(__LINE__, "errno %d", err2);
 			team8->unwind1.nodeMuts1 = node4-nodes5;
 			team8->unwind1.nodeConds1 = node4-nodes5;
 			team8->unwind1.join1 = node4-nodes5;
@@ -287,16 +287,16 @@ static char* Example28ThreaderCreate1Up4(Example28ThreaderTeam1* team8, ptrdiff_
 		node4->task1 = 0;
 		int err3 = pthread_cond_init(&node4->cond2, 0);
 		if (__builtin_expect(err3, 0)) {
-			char* msg3 = Example28Errmsg1(__LINE__, "errno %d", err3);
+			char* msg3 = CNNModelAVXErrmsg1(__LINE__, "errno %d", err3);
 			team8->unwind1.nodeMuts1 = node4-nodes5+1;
 			team8->unwind1.nodeConds1 = node4-nodes5;
 			team8->unwind1.join1 = node4-nodes5;
 			return msg3;
 		}
 		node4->team1 = team8;
-		int err4 = pthread_create(&node4->thr1, 0, Example28ThreaderMain1, node4);
+		int err4 = pthread_create(&node4->thr1, 0, CNNModelAVXThreaderMain1, node4);
 		if (__builtin_expect(err4, 0)) {
-			char* msg4 = Example28Errmsg1(__LINE__, "errno %d", err4);
+			char* msg4 = CNNModelAVXErrmsg1(__LINE__, "errno %d", err4);
 			team8->unwind1.nodeMuts1 = node4-nodes5+1;
 			team8->unwind1.nodeConds1 = node4-nodes5+1;
 			team8->unwind1.join1 = node4-nodes5;
@@ -309,79 +309,79 @@ static char* Example28ThreaderCreate1Up4(Example28ThreaderTeam1* team8, ptrdiff_
 	return 0;
 }
 
-static char* Example28ThreaderCreate1Up3(Example28ThreaderTeam1* team7, ptrdiff_t nt6) {
-	Example28ThreaderHub1* hub5 = team7->hub2;
+static char* CNNModelAVXThreaderCreate1Up3(CNNModelAVXThreaderTeam1* team7, ptrdiff_t nt6) {
+	CNNModelAVXThreaderHub1* hub5 = team7->hub2;
 	int err5 = pthread_mutex_init(&hub5->mut1, 0);
 	if (__builtin_expect(err5, 0)) {
-		return Example28Errmsg1(__LINE__, "errno %d", err5);
+		return CNNModelAVXErrmsg1(__LINE__, "errno %d", err5);
 	}
 	team7->unwind1.hubMut1 = 1;
 	int err6 = pthread_cond_init(&hub5->cond1, 0);
 	if (__builtin_expect(err6, 0)) {
-		return Example28Errmsg1(__LINE__, "errno %d", err6);
+		return CNNModelAVXErrmsg1(__LINE__, "errno %d", err6);
 	}
 	team7->unwind1.hubCond1 = 1;
-	return Example28ThreaderCreate1Up4(team7, nt6);
+	return CNNModelAVXThreaderCreate1Up4(team7, nt6);
 }
 
-static char* Example28ThreaderCreate1Up2(Example28ThreaderTeam1* team6, ptrdiff_t nt5) {
-	size_t size2 = nt5*sizeof(Example28ThreaderNode1);
-	if (__builtin_expect(size2/sizeof(Example28ThreaderNode1) != (size_t)nt5, 0)) {
-		return Example28Errmsg1(__LINE__, "too many threads");
+static char* CNNModelAVXThreaderCreate1Up2(CNNModelAVXThreaderTeam1* team6, ptrdiff_t nt5) {
+	size_t size2 = nt5*sizeof(CNNModelAVXThreaderNode1);
+	if (__builtin_expect(size2/sizeof(CNNModelAVXThreaderNode1) != (size_t)nt5, 0)) {
+		return CNNModelAVXErrmsg1(__LINE__, "too many threads");
 	}
 	void* addr3 = malloc(size2+63);
 	if (__builtin_expect(!addr3, 0)) {
-		return Example28Errmsg1(__LINE__, "errno %d", errno);
+		return CNNModelAVXErrmsg1(__LINE__, "errno %d", errno);
 	}
 	team6->unwind1.nodes1 = addr3;
 	team6->nodes2 = (void*)(((size_t)addr3+63)&-64);
-	return Example28ThreaderCreate1Up3(team6, nt5);
+	return CNNModelAVXThreaderCreate1Up3(team6, nt5);
 }
 
-static char* Example28ThreaderCreate1Up1(Example28ThreaderTeam1* team5, ptrdiff_t nt4) {
+static char* CNNModelAVXThreaderCreate1Up1(CNNModelAVXThreaderTeam1* team5, ptrdiff_t nt4) {
 	team5->nt1 = nt4;
-	size_t size1 = sizeof(Example28ThreaderHub1);
+	size_t size1 = sizeof(CNNModelAVXThreaderHub1);
 	size1 += sizeof(long)*((size_t)nt4/(sizeof(long)*8)+1);
 	size1 = (size1+63)&-64;
 	void* addr2 = malloc(size1+63);
 	if (__builtin_expect(!addr2, 0)) {
-		return Example28Errmsg1(__LINE__, "errno %d", errno);
+		return CNNModelAVXErrmsg1(__LINE__, "errno %d", errno);
 	}
 	team5->unwind1.hub1 = addr2;
 	team5->hub2 = (void*)(((size_t)addr2+63)&-64);
-	return Example28ThreaderCreate1Up2(team5, nt4);
+	return CNNModelAVXThreaderCreate1Up2(team5, nt4);
 }
 
-static char* Example28ThreaderCreate1(Example28ThreaderTeam1** team4, ptrdiff_t nt3) {
+static char* CNNModelAVXThreaderCreate1(CNNModelAVXThreaderTeam1** team4, ptrdiff_t nt3) {
 	if (__builtin_expect(nt3 < 1, 0)) {
-		return Example28Errmsg1(__LINE__, "too few threads");
+		return CNNModelAVXErrmsg1(__LINE__, "too few threads");
 	}
-	void* addr1 = calloc(1, sizeof(Example28ThreaderTeam1));
+	void* addr1 = calloc(1, sizeof(CNNModelAVXThreaderTeam1));
 	if (__builtin_expect(!addr1, 0)) {
-		return Example28Errmsg1(__LINE__, "errno %d", errno);
+		return CNNModelAVXErrmsg1(__LINE__, "errno %d", errno);
 	}
-	char* err1 = Example28ThreaderCreate1Up1(addr1, nt3);
+	char* err1 = CNNModelAVXThreaderCreate1Up1(addr1, nt3);
 	if (__builtin_expect(!!err1, 0)) {
-		Example28ThreaderDestroy1(addr1);
+		CNNModelAVXThreaderDestroy1(addr1);
 	} else {
 		*team4 = addr1;
 	}
 	return err1;
 }
 
-static char* Example28ThreaderPthreadT1(
+static char* CNNModelAVXThreaderPthreadT1(
 	pthread_t* thr2,
-	Example28ThreaderTeam1* team9,
+	CNNModelAVXThreaderTeam1* team9,
 	ptrdiff_t idx1
 ) {
 	if (__builtin_expect(idx1 < 0 || idx1 >= team9->nt1, 0)) {
-		return Example28Errmsg1(__LINE__, "bad thread idx");
+		return CNNModelAVXErrmsg1(__LINE__, "bad thread idx");
 	}
 	*thr2 = team9->nodes2[idx1].thr1;
 	return 0;
 }
 
-static void Example28ThreaderDo1(Example28ThreaderTeam1* team10, Example28ThreaderTask1* task3) {
+static void CNNModelAVXThreaderDo1(CNNModelAVXThreaderTeam1* team10, CNNModelAVXThreaderTask1* task3) {
 	ptrdiff_t nd6 = task3->nd1;
 	if (nd6 < 1) return;
 	int64_t tot1 = task3->hull1[0];
@@ -390,11 +390,11 @@ static void Example28ThreaderDo1(Example28ThreaderTeam1* team10, Example28Thread
 	int64_t each1 = tot1/nt8;
 	ptrdiff_t more1 = tot1%nt8;
 	int64_t plus2[4];
-	Example28ThreaderPut1(nd6, task3->hull1, plus2, each1);
+	CNNModelAVXThreaderPut1(nd6, task3->hull1, plus2, each1);
 	int64_t pt6[4] = {0};
-	Example28ThreaderHub1* hub6 = team10->hub2;
+	CNNModelAVXThreaderHub1* hub6 = team10->hub2;
 	for (; __builtin_expect(pthread_mutex_lock(&hub6->mut1), 0); );
-	Example28ThreaderNode1* node5 = team10->nodes2;
+	CNNModelAVXThreaderNode1* node5 = team10->nodes2;
 	for (ptrdiff_t i4 = 0; ; ++node5) {
 		for (; __builtin_expect(pthread_mutex_lock(&node5->mut2), 0); );
 		int64_t carry3 = i4 < more1;
@@ -404,7 +404,7 @@ static void Example28ThreaderDo1(Example28ThreaderTeam1* team10, Example28Thread
 		for (; __builtin_expect(pthread_mutex_unlock(&node5->mut2), 0); );
 		for (; __builtin_expect(pthread_cond_signal(&node5->cond2), 0); );
 		if (++i4 == nt8) break;
-		Example28ThreaderAdd1(nd6, task3->hull1, pt6, plus2, carry3);
+		CNNModelAVXThreaderAdd1(nd6, task3->hull1, pt6, plus2, carry3);
 	}
 	hub6->offset1 = 0;
 	hub6->mask1 = -1;
@@ -417,7 +417,7 @@ static void Example28ThreaderDo1(Example28ThreaderTeam1* team10, Example28Thread
 	for (; __builtin_expect(pthread_mutex_unlock(&hub6->mut1), 0); );
 }
 
-static __m512 Example28Exp1(__m512 x1) {
+static __m512 CNNModelAVXExp1(__m512 x1) {
 	x1 = _mm512_max_ps(x1, _mm512_set1_ps(-8.733654e+01f));
 	x1 = _mm512_min_ps(x1, _mm512_set1_ps(8.872284e+01f));
 	__m512 t1 = _mm512_mul_ps(x1, _mm512_set1_ps(1.442695e+00f));
@@ -433,7 +433,7 @@ static __m512 Example28Exp1(__m512 x1) {
 	return _mm512_castsi512_ps(_mm512_add_epi32(y1, _mm512_castps_si512(g1)));
 }
 
-static __m512 Example28Rsqrt1(__m512 x2) {
+static __m512 CNNModelAVXRsqrt1(__m512 x2) {
 	__m512 y2 = _mm512_rsqrt14_ps(x2);
 	__m512 z1 = _mm512_mul_ps(x2, y2);
 	__m512 a1 = _mm512_mul_ps(y2, _mm512_set1_ps(5e-01f));
@@ -441,7 +441,7 @@ static __m512 Example28Rsqrt1(__m512 x2) {
 	return _mm512_mul_ps(a1, b1);
 }
 
-static void Example28Twopl1Callee1(Example28ThreaderTask1* task12, int64_t* pt11) {
+static void CNNModelAVXTwopl1Callee1(CNNModelAVXThreaderTask1* task12, int64_t* pt11) {
 	char** tensors10 = task12->any1;
 	ptrdiff_t b5 = pt11[0];
 	ptrdiff_t c2 = pt11[1];
@@ -484,17 +484,17 @@ static void Example28Twopl1Callee1(Example28ThreaderTask1* task12, int64_t* pt11
 	}
 }
 
-static void Example28Twopl1(Example28ThreaderTeam1* team18, char** tensors9) {
-	Example28ThreaderTask1 task13;
-	task13.callee1 = Example28Twopl1Callee1;
+static void CNNModelAVXTwopl1(CNNModelAVXThreaderTeam1* team18, char** tensors9) {
+	CNNModelAVXThreaderTask1 task13;
+	task13.callee1 = CNNModelAVXTwopl1Callee1;
 	task13.any1 = tensors9;
 	task13.nd1 = 2;
 	task13.hull1[0] = 1;
 	task13.hull1[1] = 4;
-	Example28ThreaderDo1(team18, &task13);
+	CNNModelAVXThreaderDo1(team18, &task13);
 }
 
-static void Example28FcArrange1Callee1(Example28ThreaderTask1* task14, int64_t* pt12) {
+static void CNNModelAVXFcArrange1Callee1(CNNModelAVXThreaderTask1* task14, int64_t* pt12) {
 	char** tensors12 = task14->any1;
 	ptrdiff_t t2 = pt12[0];
 	char*restrict weights1 = tensors12[0]+(ptrdiff_t)346112*t2;
@@ -557,16 +557,16 @@ static void Example28FcArrange1Callee1(Example28ThreaderTask1* task14, int64_t* 
 	}
 }
 
-static void Example28FcArrange1(Example28ThreaderTeam1* team19, char** tensors11) {
-	Example28ThreaderTask1 task15;
-	task15.callee1 = Example28FcArrange1Callee1;
+static void CNNModelAVXFcArrange1(CNNModelAVXThreaderTeam1* team19, char** tensors11) {
+	CNNModelAVXThreaderTask1 task15;
+	task15.callee1 = CNNModelAVXFcArrange1Callee1;
 	task15.any1 = tensors11;
 	task15.nd1 = 1;
 	task15.hull1[0] = 4;
-	Example28ThreaderDo1(team19, &task15);
+	CNNModelAVXThreaderDo1(team19, &task15);
 }
 
-static void Example28FcApply1Callee1(Example28ThreaderTask1* task16, int64_t* pt13) {
+static void CNNModelAVXFcApply1Callee1(CNNModelAVXThreaderTask1* task16, int64_t* pt13) {
 	char** tensors14 = task16->any1;
 	ptrdiff_t t3 = pt13[0];
 	char*restrict wtPtr2 = tensors14[0]+(ptrdiff_t)173056*t3;
@@ -688,16 +688,16 @@ static void Example28FcApply1Callee1(Example28ThreaderTask1* task16, int64_t* pt
 	}
 }
 
-static void Example28FcApply1(Example28ThreaderTeam1* team20, char** tensors13) {
-	Example28ThreaderTask1 task17;
-	task17.callee1 = Example28FcApply1Callee1;
+static void CNNModelAVXFcApply1(CNNModelAVXThreaderTeam1* team20, char** tensors13) {
+	CNNModelAVXThreaderTask1 task17;
+	task17.callee1 = CNNModelAVXFcApply1Callee1;
 	task17.any1 = tensors13;
 	task17.nd1 = 1;
 	task17.hull1[0] = 4;
-	Example28ThreaderDo1(team20, &task17);
+	CNNModelAVXThreaderDo1(team20, &task17);
 }
 
-static void Example28FcArrange2Callee1(Example28ThreaderTask1* task18, int64_t* pt14) {
+static void CNNModelAVXFcArrange2Callee1(CNNModelAVXThreaderTask1* task18, int64_t* pt14) {
 	char** tensors16 = task18->any1;
 	ptrdiff_t t4 = pt14[0];
 	ptrdiff_t s3 = (ptrdiff_t)8*t4;
@@ -743,16 +743,16 @@ static void Example28FcArrange2Callee1(Example28ThreaderTask1* task18, int64_t* 
 	}
 }
 
-static void Example28FcArrange2(Example28ThreaderTeam1* team21, char** tensors15) {
-	Example28ThreaderTask1 task19;
-	task19.callee1 = Example28FcArrange2Callee1;
+static void CNNModelAVXFcArrange2(CNNModelAVXThreaderTeam1* team21, char** tensors15) {
+	CNNModelAVXThreaderTask1 task19;
+	task19.callee1 = CNNModelAVXFcArrange2Callee1;
 	task19.any1 = tensors15;
 	task19.nd1 = 1;
 	task19.hull1[0] = 1;
-	Example28ThreaderDo1(team21, &task19);
+	CNNModelAVXThreaderDo1(team21, &task19);
 }
 
-static void Example28FcApply2Callee1(Example28ThreaderTask1* task20, int64_t* pt15) {
+static void CNNModelAVXFcApply2Callee1(CNNModelAVXThreaderTask1* task20, int64_t* pt15) {
 	char** tensors18 = task20->any1;
 	ptrdiff_t t5 = pt15[0];
 	ptrdiff_t s4 = 8*t5;
@@ -848,16 +848,16 @@ static void Example28FcApply2Callee1(Example28ThreaderTask1* task20, int64_t* pt
 	}
 }
 
-static void Example28FcApply2(Example28ThreaderTeam1* team22, char** tensors17) {
-	Example28ThreaderTask1 task21;
-	task21.callee1 = Example28FcApply2Callee1;
+static void CNNModelAVXFcApply2(CNNModelAVXThreaderTeam1* team22, char** tensors17) {
+	CNNModelAVXThreaderTask1 task21;
+	task21.callee1 = CNNModelAVXFcApply2Callee1;
 	task21.any1 = tensors17;
 	task21.nd1 = 1;
 	task21.hull1[0] = 1;
-	Example28ThreaderDo1(team22, &task21);
+	CNNModelAVXThreaderDo1(team22, &task21);
 }
 
-static void Example28ThreeArrangeFilts1Callee1(Example28ThreaderTask1* task4, int64_t* pt7) {
+static void CNNModelAVXThreeArrangeFilts1Callee1(CNNModelAVXThreaderTask1* task4, int64_t* pt7) {
 	char** tensors2 = task4->any1;
 	ptrdiff_t b2 = 0;
 	ptrdiff_t g2 = 0;
@@ -1035,18 +1035,18 @@ static void Example28ThreeArrangeFilts1Callee1(Example28ThreaderTask1* task4, in
 	}
 }
 
-static void Example28ThreeArrangeFilts1(Example28ThreaderTeam1* team13, char** tensors1) {
-	Example28ThreaderTask1 task5;
-	task5.callee1 = Example28ThreeArrangeFilts1Callee1;
+static void CNNModelAVXThreeArrangeFilts1(CNNModelAVXThreaderTeam1* team13, char** tensors1) {
+	CNNModelAVXThreaderTask1 task5;
+	task5.callee1 = CNNModelAVXThreeArrangeFilts1Callee1;
 	task5.any1 = tensors1;
 	task5.nd1 = 3;
 	task5.hull1[0] = 1;
 	task5.hull1[1] = 1;
 	task5.hull1[2] = 1;
-	Example28ThreaderDo1(team13, &task5);
+	CNNModelAVXThreaderDo1(team13, &task5);
 }
 
-static void Example28ThreeArrangeDats1Callee1(Example28ThreaderTask1* task6, int64_t* pt8) {
+static void CNNModelAVXThreeArrangeDats1Callee1(CNNModelAVXThreaderTask1* task6, int64_t* pt8) {
 	char** tensors4 = task6->any1;
 	ptrdiff_t s2 = 0;
 	ptrdiff_t c1 = 0;
@@ -2669,19 +2669,19 @@ static void Example28ThreeArrangeDats1Callee1(Example28ThreaderTask1* task6, int
 	++j2;
 }
 
-static void Example28ThreeArrangeDats1(Example28ThreaderTeam1* team15, char** tensors3) {
-	Example28ThreaderTask1 task7;
-	task7.callee1 = Example28ThreeArrangeDats1Callee1;
+static void CNNModelAVXThreeArrangeDats1(CNNModelAVXThreaderTeam1* team15, char** tensors3) {
+	CNNModelAVXThreaderTask1 task7;
+	task7.callee1 = CNNModelAVXThreeArrangeDats1Callee1;
 	task7.any1 = tensors3;
 	task7.nd1 = 4;
 	task7.hull1[0] = 1;
 	task7.hull1[1] = 1;
 	task7.hull1[2] = 1;
 	task7.hull1[3] = 1;
-	Example28ThreaderDo1(team15, &task7);
+	CNNModelAVXThreaderDo1(team15, &task7);
 }
 
-static void Example28ThreeProduceSums1Callee1(Example28ThreaderTask1* task8, int64_t* pt9) {
+static void CNNModelAVXThreeProduceSums1Callee1(CNNModelAVXThreaderTask1* task8, int64_t* pt9) {
 	void** pair2 = task8->any1;
 	char** tensors6 = pair2[0];
 	ptrdiff_t e3 = 0;
@@ -2841,20 +2841,20 @@ static void Example28ThreeProduceSums1Callee1(Example28ThreaderTask1* task8, int
 	}
 }
 
-static void Example28ThreeProduceSums1(Example28ThreaderTeam1* team16, char** tensors5) {
+static void CNNModelAVXThreeProduceSums1(CNNModelAVXThreaderTeam1* team16, char** tensors5) {
 	void* pair1[] = {tensors5, 0};
-	Example28ThreaderTask1 task9;
-	task9.callee1 = Example28ThreeProduceSums1Callee1;
+	CNNModelAVXThreaderTask1 task9;
+	task9.callee1 = CNNModelAVXThreeProduceSums1Callee1;
 	task9.any1 = pair1;
 	task9.nd1 = 4;
 	task9.hull1[0] = 1;
 	task9.hull1[1] = 1;
 	task9.hull1[2] = 1;
 	task9.hull1[3] = 1;
-	Example28ThreaderDo1(team16, &task9);
+	CNNModelAVXThreaderDo1(team16, &task9);
 }
 
-static void Example28ThreeConsumeSums1Callee1(Example28ThreaderTask1* task10, int64_t* pt10) {
+static void CNNModelAVXThreeConsumeSums1Callee1(CNNModelAVXThreaderTask1* task10, int64_t* pt10) {
 	char** tensors8 = task10->any1;
 	ptrdiff_t w7 = 0;
 	ptrdiff_t d2 = 0;
@@ -5473,42 +5473,42 @@ static void Example28ThreeConsumeSums1Callee1(Example28ThreaderTask1* task10, in
 	++j4;
 }
 
-static void Example28ThreeConsumeSums1(Example28ThreaderTeam1* team17, char** tensors7) {
-	Example28ThreaderTask1 task11;
-	task11.callee1 = Example28ThreeConsumeSums1Callee1;
+static void CNNModelAVXThreeConsumeSums1(CNNModelAVXThreaderTeam1* team17, char** tensors7) {
+	CNNModelAVXThreaderTask1 task11;
+	task11.callee1 = CNNModelAVXThreeConsumeSums1Callee1;
 	task11.any1 = tensors7;
 	task11.nd1 = 3;
 	task11.hull1[0] = 1;
 	task11.hull1[1] = 1;
 	task11.hull1[2] = 1;
-	Example28ThreaderDo1(team17, &task11);
+	CNNModelAVXThreaderDo1(team17, &task11);
 }
 
-struct Example28Net {
+struct CNNModelAVXNet {
 	char* alloc1;
 	char* align1;
 };
 
-void Example28NetDestroy(Example28Net* net2) {
+void CNNModelAVXNetDestroy(CNNModelAVXNet* net2) {
 	free(net2->alloc1);
 	free(net2);
 }
 
-char* Example28NetCreate(
-	Example28Net** net1,
-	Example28Params* params1,
+char* CNNModelAVXNetCreate(
+	CNNModelAVXNet** net1,
+	CNNModelAVXParams* params1,
 	ptrdiff_t threads1
 ) {
 	if (__builtin_expect(!__builtin_cpu_supports("avx512f"), 0)) {
-		return Example28Errmsg1(__LINE__, "CPU does not support AVX512F");
+		return CNNModelAVXErrmsg1(__LINE__, "CPU does not support AVX512F");
 	}
 	char* alloc3 = malloc(698087);
 	if (__builtin_expect(!alloc3, 0)) {
-		return Example28Errmsg1(__LINE__, "errno %d", errno);
+		return CNNModelAVXErrmsg1(__LINE__, "errno %d", errno);
 	}
 	char* align4 = (void*)(((size_t)alloc3+63)&-64);
-	Example28ThreaderTeam1* team12 = 0;
-	char* err8 = Example28ThreaderCreate1(&team12, threads1);
+	CNNModelAVXThreaderTeam1* team12 = 0;
+	char* err8 = CNNModelAVXThreaderCreate1(&team12, threads1);
 	if (__builtin_expect(!!err8, 0)) {
 		free(alloc3);
 		return err8;
@@ -5519,7 +5519,7 @@ char* Example28NetCreate(
 			(char*)params1->convoutputBiases,
 			align4+0
 		};
-		Example28ThreeArrangeFilts1(team12, tensors25);
+		CNNModelAVXThreeArrangeFilts1(team12, tensors25);
 	}
 	{
 		char* tensors26[] = {
@@ -5527,7 +5527,7 @@ char* Example28NetCreate(
 			(char*)params1->denseoutputBiases,
 			align4+4224
 		};
-		Example28FcArrange1(team12, tensors26);
+		CNNModelAVXFcArrange1(team12, tensors26);
 	}
 	{
 		char* tensors27[] = {
@@ -5535,12 +5535,12 @@ char* Example28NetCreate(
 			(char*)params1->outputlogitsBiases,
 			align4+696704
 		};
-		Example28FcArrange2(team12, tensors27);
+		CNNModelAVXFcArrange2(team12, tensors27);
 	}
-	Example28ThreaderDestroy1(team12);
-	Example28Net* net5 = malloc(sizeof(Example28Net));
+	CNNModelAVXThreaderDestroy1(team12);
+	CNNModelAVXNet* net5 = malloc(sizeof(CNNModelAVXNet));
 	if (__builtin_expect(!net5, 0)) {
-		char* msg6 = Example28Errmsg1(__LINE__, "errno %d", errno);
+		char* msg6 = CNNModelAVXErrmsg1(__LINE__, "errno %d", errno);
 		free(alloc3);
 		return msg6;
 	}
@@ -5550,45 +5550,45 @@ char* Example28NetCreate(
 	return 0;
 }
 
-struct Example28Engine {
-	Example28Net* net3;
-	Example28ThreaderTeam1* team11;
+struct CNNModelAVXEngine {
+	CNNModelAVXNet* net3;
+	CNNModelAVXThreaderTeam1* team11;
 	char* alloc2;
 	char* align2;
 };
 
-char* Example28EnginePthreadT(
-	Example28Engine* eng2,
+char* CNNModelAVXEnginePthreadT(
+	CNNModelAVXEngine* eng2,
 	ptrdiff_t idx2,
 	pthread_t* to1
 ) {
-	return Example28ThreaderPthreadT1(to1, eng2->team11, idx2);
+	return CNNModelAVXThreaderPthreadT1(to1, eng2->team11, idx2);
 }
 
-void Example28EngineDestroy(Example28Engine* eng3) {
-	Example28ThreaderDestroy1(eng3->team11);
+void CNNModelAVXEngineDestroy(CNNModelAVXEngine* eng3) {
+	CNNModelAVXThreaderDestroy1(eng3->team11);
 	free(eng3->alloc2);
 	free(eng3);
 }
 
-char* Example28EngineCreate(
-	Example28Engine** eng4,
-	Example28Net* net4,
+char* CNNModelAVXEngineCreate(
+	CNNModelAVXEngine** eng4,
+	CNNModelAVXNet* net4,
 	ptrdiff_t threads2
 ) {
-	Example28Engine* eng5 = malloc(sizeof(Example28Engine));
+	CNNModelAVXEngine* eng5 = malloc(sizeof(CNNModelAVXEngine));
 	if (__builtin_expect(!eng5, 0)) {
-		return Example28Errmsg1(__LINE__, "errno %d", errno);
+		return CNNModelAVXErrmsg1(__LINE__, "errno %d", errno);
 	}
 	char* alloc4 = malloc(321023);
 	if (__builtin_expect(!alloc4, 0)) {
-		char* msg5 = Example28Errmsg1(__LINE__, "errno %d", errno);
+		char* msg5 = CNNModelAVXErrmsg1(__LINE__, "errno %d", errno);
 		free(eng5);
 		return msg5;
 	}
 	eng5->alloc2 = alloc4;
 	eng5->align2 = (void*)(((size_t)alloc4+63)&-64);
-	char* err7 = Example28ThreaderCreate1(&eng5->team11, threads2);
+	char* err7 = CNNModelAVXThreaderCreate1(&eng5->team11, threads2);
 	if (__builtin_expect(!!err7, 0)) {
 		free(eng5);
 		free(alloc4);
@@ -5599,38 +5599,38 @@ char* Example28EngineCreate(
 	return 0;
 }
 
-void Example28EngineInference(
-	Example28Engine* eng1,
+void CNNModelAVXEngineInference(
+	CNNModelAVXEngine* eng1,
 	float* inputdataData,
 	float* outputlogitsData
 ) {
 	char* netAlign1 = eng1->net3->align1;
-	Example28ThreaderTeam1* team14 = eng1->team11;
+	CNNModelAVXThreaderTeam1* team14 = eng1->team11;
 	char* align3 = eng1->align2;
 	{
 		char* tensors19[] = {
 			(char*)inputdataData,
 			align3+109760
 		};
-		Example28ThreeArrangeDats1(team14, tensors19);
+		CNNModelAVXThreeArrangeDats1(team14, tensors19);
 		char* tensors20[] = {
 			netAlign1+0,
 			align3+109760,
 			align3+116160
 		};
-		Example28ThreeProduceSums1(team14, tensors20);
+		CNNModelAVXThreeProduceSums1(team14, tensors20);
 		char* tensors21[] = {
 			align3+116160,
 			align3+0
 		};
-		Example28ThreeConsumeSums1(team14, tensors21);
+		CNNModelAVXThreeConsumeSums1(team14, tensors21);
 	}
 	{
 		char* tensors22[] = {
 			align3+0,
 			align3+88128
 		};
-		Example28Twopl1(team14, tensors22);
+		CNNModelAVXTwopl1(team14, tensors22);
 	}
 	{
 		char* tensors23[] = {
@@ -5638,7 +5638,7 @@ void Example28EngineInference(
 			align3+88128,
 			align3+0
 		};
-		Example28FcApply1(team14, tensors23);
+		CNNModelAVXFcApply1(team14, tensors23);
 	}
 	{
 		char* tensors24[] = {
@@ -5646,7 +5646,7 @@ void Example28EngineInference(
 			align3+0,
 			(char*)outputlogitsData
 		};
-		Example28FcApply2(team14, tensors24);
+		CNNModelAVXFcApply2(team14, tensors24);
 	}
 }
 
