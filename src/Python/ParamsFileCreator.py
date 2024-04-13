@@ -19,7 +19,7 @@ print(output_logits_weights.shape)
 # struktura ParamsFile
 cnn_params = {
     'convoutputBiases': conv_output_biases,
-    'convoutputWeights': tf.transpose(conv_output_weights, perm=[3, 2, 0, 1]).numpy().flatten(),
+    'convoutputWeights': tf.transpose(conv_output_weights, perm=[3, 2, 1, 0]).numpy().flatten(),
     'denseoutputBiases': dense_output_biases,
     'denseoutputWeights': tf.transpose(dense_output_weights, perm=[1, 0]).numpy().flatten(),
     'outputlogitsBiases': output_logits_biases,
