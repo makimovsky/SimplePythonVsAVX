@@ -21,9 +21,9 @@ cnn_params = {
     'convoutputBiases': conv_output_biases,
     'convoutputWeights': tf.transpose(conv_output_weights, perm=[0, 3, 1, 2]).numpy().flatten(),
     'denseoutputBiases': dense_output_biases,
-    'denseoutputWeights': tf.transpose(dense_output_weights, perm=[1, 0]).numpy().flatten(),
+    'denseoutputWeights': tf.transpose(dense_output_weights, perm=[0, 1]).numpy().flatten(),
     'outputlogitsBiases': output_logits_biases,
-    'outputlogitsWeights': tf.transpose(output_logits_weights, perm=[1, 0]).numpy().flatten(),
+    'outputlogitsWeights': tf.transpose(output_logits_weights, perm=[0, 1]).numpy().flatten(),
 }
 
 print("\nPo przekształceniu:")
