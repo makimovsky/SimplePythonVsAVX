@@ -19,11 +19,11 @@ print(output_logits_weights.shape)
 # struktura ParamsFile
 cnn_params = {
     'convoutputBiases': conv_output_biases,
-    'convoutputWeights': conv_output_weights.flatten(),  # tf.transpose(conv_output_weights, perm=[3, 2, 1, 0]).numpy().flatten(),
+    'convoutputWeights': tf.transpose(conv_output_weights, perm=[0, 3, 1, 2]).numpy().flatten(),
     'denseoutputBiases': dense_output_biases,
-    'denseoutputWeights': dense_output_weights.flatten(),  # tf.transpose(dense_output_weights, perm=[1, 0]).numpy().flatten(),
+    'denseoutputWeights': tf.transpose(dense_output_weights, perm=[1, 0]).numpy().flatten(),
     'outputlogitsBiases': output_logits_biases,
-    'outputlogitsWeights': output_logits_weights.flatten()  # tf.transpose(output_logits_weights, perm=[1, 0]).numpy().flatten(),
+    'outputlogitsWeights': tf.transpose(output_logits_weights, perm=[1, 0]).numpy().flatten(),
 }
 
 print("\nPo przekształceniu:")
