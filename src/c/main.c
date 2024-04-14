@@ -41,8 +41,9 @@ int main(int argc, char** argv) {
         printf("Failed to open image file.\n");
         exit(1);
     }
-    fread(inputdataData, sizeData, 1*28*28, image);
-
+    fread(inputdataData, sizeData, 392, image);
+    fclose(image);
+    
     CNNModelAVXEngineInference(
         engine,
         inputdataData,
