@@ -32,4 +32,4 @@ score = model.evaluate(test_images,  test_labels, return_dict=True)
 print("\nModel accuracy for test data:", score["accuracy"])
 
 # zapisanie modelu
-model.save('../../resources/model2.keras')
+model.save('../../resources/model4.keras')

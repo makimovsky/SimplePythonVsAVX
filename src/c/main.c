@@ -5,7 +5,7 @@ int main(int argc, char** argv) {
     //Wczytanie ParamsFile
     size_t sizeNet = sizeof(CNNModelAVXParams);
     CNNModelAVXParams* params = malloc(sizeNet);
-    FILE* from = fopen("../../resources/ParamsFile01", "rb");
+    FILE* from = fopen("../../resources/ParamsFile4", "rb");
     fread(params, sizeNet, 1, from);
     fclose(from);
 
@@ -41,15 +41,17 @@ int main(int argc, char** argv) {
         printf("Failed to open image file.\n");
         exit(1);
     }
+
     fread(inputdataData, sizeData, 392, image);
     fclose(image);
-    
+
     CNNModelAVXEngineInference(
         engine,
         inputdataData,
         outputlogitsData
     );
-
+    
+    printf("\n");
     for (int i = 0; i < 10; i++) {
         printf("%f\t", outputlogitsData[i]);
     }
