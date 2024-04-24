@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 # import h5py
 #
@@ -6,13 +7,19 @@ import tensorflow as tf
 
 
 # wczytanie zapisanego modelu
-model = tf.keras.models.load_model("../../resources/model2.keras")
+model = tf.keras.models.load_model("../../resources/model.keras")
 
 # wydobycie wag
 conv_output_weights, conv_output_biases = model.layers[0].get_weights()
 dense_output_weights, dense_output_biases = model.layers[3].get_weights()
 output_logits_weights, output_logits_biases = model.layers[4].get_weights()
 
+conv_output_biases = np.ones_like(conv_output_biases)
+conv_output_weights = np.ones_like(conv_output_weights)
+dense_output_biases = np.ones_like(dense_output_biases)
+dense_output_weights = np.ones_like(dense_output_weights)
+output_logits_biases = np.ones_like(output_logits_biases)
+output_logits_weights = np.ones_like(output_logits_weights)
 
 print("Przed przekształceniem:")
 print(conv_output_biases.shape)
@@ -41,7 +48,7 @@ print(cnn_params.get("outputlogitsBiases").shape)
 print(cnn_params.get("outputlogitsWeights").shape)
 
 # zapisanie binarne wag do pliku ParamsFile
-with open("../../resources/ParamsFile22", "wb") as file:
+with open("../../resources/ParamsFileOnes", "wb") as file:
     for key, value in cnn_params.items():
         value.tofile(file)
 
