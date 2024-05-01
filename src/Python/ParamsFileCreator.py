@@ -2,19 +2,41 @@ import numpy as np
 import tensorflow as tf
 
 # wczytanie zapisanego modelu
-model = tf.keras.models.load_model("../../resources/model3.keras")
+model = tf.keras.models.load_model("../../resources/model4.keras")
 
 # wydobycie wag
 conv_output_weights, conv_output_biases = model.layers[0].get_weights()
 dense_output_weights, dense_output_biases = model.layers[3].get_weights()
 output_logits_weights, output_logits_biases = model.layers[4].get_weights()
 
+#dense_output_weights = np.reshape(dense_output_weights, (13, 13, 32, 64))
+"""
+params = [conv_output_biases, conv_output_weights, dense_output_biases, dense_output_weights, output_logits_biases, output_logits_weights]
+
 conv_output_biases[:] = 1
 conv_output_weights[:] = 1
 dense_output_biases[:] = 1
 dense_output_weights[:] = 1
-#output_logits_biases[:] = 1
-#output_logits_weights[:] = 1
+output_logits_biases[:] = 1
+output_logits_weights[:] = 1
+
+output_logits_weights[1][7] = 2
+
+output_logits_weights = output_logits_weights[::-1, ::-1]
+
+np.random.seed(2256)
+
+for i in params:
+    elems = i.size
+
+    num_twos = int(elems * 0.3)
+
+    rand_elems = np.random.choice(elems, num_twos, replace=False)
+
+    arr = np.unravel_index(rand_elems, i.shape)
+
+    i[arr] = 2
+"""
 
 print("Przed przekształceniem:")
 print(conv_output_biases.shape)
@@ -24,15 +46,18 @@ print(dense_output_weights.shape)
 print(output_logits_biases.shape)
 print(output_logits_weights.shape)
 
-# struktura ParamsFile
+conv_output_weights = conv_output_weights / -2.34
+
+#struktura ParamsFile
 cnn_params = {
-    'convoutputBiases': conv_output_biases,
-    'convoutputWeights': conv_output_weights.flatten(),#tf.transpose(conv_output_weights, perm=[3, 2, 1, 0]).numpy().flatten(),
-    'denseoutputBiases': dense_output_biases,
-    'denseoutputWeights': dense_output_weights.flatten(),#tf.transpose(dense_output_weights, perm=[1, 0]).numpy().flatten(),
-    'outputlogitsBiases': output_logits_biases,
-    'outputlogitsWeights': tf.transpose(output_logits_weights, perm=[1, 0]).numpy().flatten(),
+        'convoutputBiases': conv_output_biases.flatten(), # dobrze
+        'convoutputWeights': tf.transpose(conv_output_weights).numpy().flatten(), # dobrze?
+        'denseoutputBiases': dense_output_biases.flatten(), # dobrze
+        'denseoutputWeights': dense_output_weights.flatten(), #tf.transpose(dense_output_weights).numpy().flatten(),
+        'outputlogitsBiases': output_logits_biases.flatten(), # dobrze
+        'outputlogitsWeights': tf.transpose(output_logits_weights).numpy().flatten(), # dobrze
 }
+
 
 print("\nPo przekształceniu:")
 print(cnn_params.get("convoutputBiases").shape)

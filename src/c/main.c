@@ -9,6 +9,9 @@ int main(int argc, char** argv) {
     fread(params, sizeNet, 1, from);
     fclose(from);
 
+//    for(int i=0; i<64; i++)
+//	    printf("%f ", params->denseoutputWeights[1180 + i]);
+
     //Utworzenie siatki
     CNNModelAVXNet* net;
     char* errNet = CNNModelAVXNetCreate(&net, params, 4);
