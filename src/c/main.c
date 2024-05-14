@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
     fclose(from);
 
 //    for(int i=0; i<64; i++)
-//	    printf("%f ", params->denseoutputWeights[1180 + i]);
+//	    printf("%f ", params->denseoutputWeights[346000 + i]);
 
     //Utworzenie siatki
     CNNModelAVXNet* net;
