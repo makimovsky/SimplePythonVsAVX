@@ -8,10 +8,12 @@ int main(int argc, char** argv) {
     FILE* from = fopen("../../resources/ParamsFile4", "rb");
     fread(params, sizeNet, 1, from);
     fclose(from);
-
-//    for(int i=0; i<64; i++)
-//	    printf("%f ", params->denseoutputWeights[346000 + i]);
-
+	
+    FILE* f = fopen("wagi.txt", "w");
+    for(int i=0; i<346112; i++)
+    	fprintf(f,"%f\n", params->denseoutputWeights[i]);
+    
+    fclose(f);
     //Utworzenie siatki
     CNNModelAVXNet* net;
     char* errNet = CNNModelAVXNetCreate(&net, params, 4);

@@ -16,6 +16,11 @@ output_logits_weights, output_logits_biases = model.layers[4].get_weights()
 #output_logits_biases[:] = 1
 #output_logits_weights[:] = 1
 
+with open("wagi_p.txt", "w") as f:
+    for i in dense_output_weights:
+        for j in i:
+            f.write(f"{j}\n")
+
 r = tf.random.Generator.from_seed(111)
 dense_output_weights = r.normal(shape=(5408, 64)).numpy()
 
