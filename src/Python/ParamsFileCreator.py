@@ -21,12 +21,14 @@ with open("wagi_p.txt", "w") as f:
         for j in i:
             f.write(f"{j}\n")
 
-r = tf.random.Generator.from_seed(111)
-dense_output_weights = r.normal(shape=(5408, 64)).numpy()
+#r = tf.random.Generator.from_seed(111)
+#dense_output_weights = r.normal(shape=(5408, 64)).numpy()
 
-model.layers[0].set_weights([conv_output_weights, conv_output_biases])
-model.layers[3].set_weights([dense_output_weights, dense_output_biases])
-model.layers[4].set_weights([output_logits_weights, output_logits_biases])
+#model.layers[0].set_weights([conv_output_weights, conv_output_biases])
+#model.layers[3].set_weights([dense_output_weights, dense_output_biases])
+#model.layers[4].set_weights([output_logits_weights, output_logits_biases])
+
+print(type(dense_output_weights[0][0]))
 
 image_file = '../../resources/image0'
 image = np.fromfile(image_file, dtype=np.float32)
