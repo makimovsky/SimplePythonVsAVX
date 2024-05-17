@@ -28,7 +28,6 @@ with open("wagi_p.txt", "w") as f:
 #model.layers[3].set_weights([dense_output_weights, dense_output_biases])
 #model.layers[4].set_weights([output_logits_weights, output_logits_biases])
 
-print(type(dense_output_weights[0][0]))
 
 image_file = '../../resources/image0'
 image = np.fromfile(image_file, dtype=np.float32)
@@ -38,8 +37,9 @@ result = model.predict(image)
 
 print(result)
 
-dense_output_weights = dense_output_weights.reshape(13, 13, 32, 64)
 conv_output_weights = conv_output_weights / -2.685
+
+dense_output_weights = tf.reshape(dense_output_weights, (13, 13, 32, 64)).numpy()
 
 #struktura ParamsFile
 cnn_params = {
