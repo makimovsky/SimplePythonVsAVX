@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include "CNNModelAVX.h"
 
 int main(int argc, char** argv) {
@@ -36,25 +37,36 @@ int main(int argc, char** argv) {
     float* outputlogitsData = malloc(sizeof(float)*10*1*1);
     size_t sizeData = sizeof(inputdataData);
 
-    FILE* image = fopen("../../resources/image0", "rb");
-    if (image==NULL) {
-        printf("Failed to open image file.\n");
-        exit(1);
-    }
-
-    fread(inputdataData, sizeData, 392, image);
-    fclose(image);
-
-    CNNModelAVXEngineInference(
-        engine,
-        inputdataData,
-        outputlogitsData
-    );
+    clock_t start, t;
+    FILE* ctime = fopen("../../resources/ctime.txt", "w");
+    start = clock();
+    for(int i=0; i<1000; i++) {
+        FILE* image = fopen("../../resources/image0", "rb");
+        if (image==NULL) {
+            printf("Failed to open image file.\n");
+            exit(1);
+        }
     
-    printf("\n");
-    for (int i = 0; i < 10; i++) {
-        printf("%f\t", outputlogitsData[i]);
+        fread(inputdataData, sizeData, 392, image);
+        fclose(image);
+
+        CNNModelAVXEngineInference(
+            engine,
+            inputdataData,
+            outputlogitsData
+        );
+
+        if(i % 9 == 0) {
+            t = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+            fprintf(ctime, "%f\n", t);
+        }
     }
+    fclose(ctime);
+
+    // printf("\n");
+    // for (int i = 0; i < 10; i++) {
+    //     printf("%f\t", outputlogitsData[i]);
+    // }
 
     //Zwolnienie pamieci
     free(inputdataData);
