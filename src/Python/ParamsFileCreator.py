@@ -16,11 +16,6 @@ output_logits_weights, output_logits_biases = model.layers[4].get_weights()
 #output_logits_biases[:] = 1
 #output_logits_weights[:] = 1
 
-with open("wagi_p.txt", "w") as f:
-    for i in dense_output_weights:
-        for j in i:
-            f.write(f"{j}\n")
-
 #r = tf.random.Generator.from_seed(111)
 #dense_output_weights = r.normal(shape=(5408, 64)).numpy()
 
@@ -29,7 +24,7 @@ with open("wagi_p.txt", "w") as f:
 #model.layers[4].set_weights([output_logits_weights, output_logits_biases])
 
 
-image_file = '../../resources/image0'
+image_file = '../../resources/images/image0'
 image = np.fromfile(image_file, dtype=np.float32)
 image = image.reshape((1, 28, 28, 1)).astype(np.float32)
 

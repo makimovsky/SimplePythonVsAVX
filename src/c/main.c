@@ -9,12 +9,6 @@ int main(int argc, char** argv) {
     FILE* from = fopen("../../resources/ParamsFile4", "rb");
     fread(params, sizeNet, 1, from);
     fclose(from);
-	
-    //FILE* f = fopen("wagi.txt", "w");
-    //for(int i=0; i<346112; i++)
-    //	fprintf(f,"%f\n", params->denseoutputWeights[i]);
-    //
-    //fclose(f);
     
     //Utworzenie siatki
     CNNModelAVXNet* net;
@@ -43,11 +37,15 @@ int main(int argc, char** argv) {
     float* outputlogitsData = malloc(sizeof(float)*10*1*1);
     size_t sizeData = sizeof(inputdataData);
 
-    clock_t start, t;
+    clock_t start, end;
+    double t;
     FILE* ctime = fopen("../../resources/ctime.txt", "w");
     start = clock();
+    char filename[35];
     for(int i=0; i<1000; i++) {
-        FILE* image = fopen("../../resources/image0", "rb");
+	sprintf(filename, "../../resources/images/image%d", i);
+	
+        FILE* image = fopen(filename, "rb");
         if (image==NULL) {
             printf("Failed to open image file.\n");
             exit(1);
@@ -63,7 +61,8 @@ int main(int argc, char** argv) {
         );
 
         if(i % 9 == 0) {
-            t = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+	    end = clock();
+            t = ((double)(end - start)) / CLOCKS_PER_SEC;
             fprintf(ctime, "%f\n", t);
         }
     }
