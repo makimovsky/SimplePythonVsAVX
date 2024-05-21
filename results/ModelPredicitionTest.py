@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import time
 
-model = tf.keras.models.load_model('../resources/model.keras')
+model = tf.keras.models.load_model('../resources/model3.keras')
 
 start = time.time()
 with open("../resources/pythontime.txt", "w") as f:
