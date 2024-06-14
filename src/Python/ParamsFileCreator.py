@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 # wczytanie zapisanego modelu
-model = tf.keras.models.load_model("../../resources/model3.keras")
+model = tf.keras.models.load_model("model3.keras")
 
 # wydobycie wag
 conv_output_weights, conv_output_biases = model.layers[0].get_weights()

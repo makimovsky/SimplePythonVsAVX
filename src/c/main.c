@@ -29,8 +29,6 @@ int main(int argc, char** argv) {
         CNNModelAVXNetDestroy(net);
         exit(1); 
     }
-    //Zarzadzanie watkami
-    //     ... Use the POSIX threads API to adjust engine's threads ...
 
     //Wczytanie obrazu i wynik
     float* inputdataData = malloc(sizeof(float)*1*28*28);
@@ -39,7 +37,7 @@ int main(int argc, char** argv) {
 
     clock_t start, end;
     double t;
-    FILE* ctime = fopen("../../resources/ctime.txt", "w");
+
     start = clock();
     char filename[35];
     for(int i=0; i<1000; i++) {
@@ -59,13 +57,11 @@ int main(int argc, char** argv) {
             inputdataData,
             outputlogitsData
         );
-
-        if(i % 9 == 0) {
-	    end = clock();
-            t = ((double)(end - start)) / CLOCKS_PER_SEC;
-            fprintf(ctime, "%f\n", t);
-        }
     }
+    t = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    FILE* ctime = fopen("../../results/ctime.txt", "w");
+    fprintf(ctime, "%f\n", t);
     fclose(ctime);
 
     // printf("\n");

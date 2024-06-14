@@ -1,15 +1,22 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-file_python = '../resources/pythontime.txt'
-# file_c = '../resources/ctime.txt'
+file_python = 'pythontime.txt'
+file_c = 'ctime.txt'
 
-python_times = np.loadtxt(file_python)
-# c_times = np.loadtxt(file_c)
+python_time = np.loadtxt(file_python)
+c_time = np.loadtxt(file_c)
+colors = ['skyblue', 'orange']
 
-plt.plot(python_times, label="Python time")
-# plt.plot(c_times, label="C time")
-plt.xlabel("Wielkość danych")
-plt.ylabel("Czas")
-plt.legend()
+times = np.array([python_time[-1], c_time[-1]])
+labels = np.array(["Python", "C with AVX2"])
+plt.barh(labels, times, color=colors, log=True)
+plt.xlim(right=100)
+plt.xlabel("Time (logarithmic scale)")
+
+for index, value in enumerate(list(times)):
+    plt.text(value, index, f'{value:.2f}', va='center', ha='left', color='black', fontsize=10)
+
+plt.savefig('result.png', bbox_inches='tight')
+
 plt.show()
