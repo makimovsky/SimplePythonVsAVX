@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import time
 
-model = tf.keras.models.load_model('model3.keras')
+model = tf.keras.models.load_model('model.keras')
 
 start = time.time()
 for i in range(1000):
@@ -15,5 +15,5 @@ for i in range(1000):
 t = time.time() - start
 
 with open("../../results/pythontime.txt", "w") as f:
-    f.write(str(t) + '\n')
+    f.write(str(t))
 f.close()
